@@ -1,0 +1,310 @@
+{% extends 'base.html' %}
+{% block content %}
+   <!-- Hero Carousel -->
+    <section class="relative py-12">
+        <div class="container mx-auto px-4 relative">
+            <div class="carousel-container relative h-80 rounded-xl overflow-hidden">
+                {% for slide in slides %}
+                <div class="carousel-slide {% if forloop.first %}active{% endif %} absolute inset-0 flex items-center transition-opacity duration-700"
+                     aria-hidden="{% if not forloop.first %}true{% else %}false{% endif %}"
+                     tabindex="{% if forloop.first %}0{% else %}-1{% endif %}"
+                     style="{% if slide.image %}background-image: linear-gradient(to right, rgba(37,99,235,0.7), rgba(139,92,246,0.7)), url('{% autoescape off %}{{ slide.image.url }}{% endautoescape %}'); background-size:cover; background-position:center;{% else %}background-image: linear-gradient(to right, #2563eb, #8b5cf6);{% endif %}">
+                    <div class="flex-1 p-8">
+                        <h2 class="text-4xl font-bold mb-4">{{ slide.title|linebreaksbr }}</h2>
+                        <p class="text-lg mb-6 opacity-90">{{ slide.subtitle }}</p>
+                        <div class="space-x-4">
+                            {% if slide.button1_text %}
+                            <a href="{{ slide.button1_url }}" class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">{{ slide.button1_text }}</a>
+                            {% endif %}
+                            {% if slide.button2_text %}
+                            <a href="{{ slide.button2_url }}" class="border border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">{{ slide.button2_text }}</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="flex-1 flex justify-center">
+                        <!-- Можно убрать картинку, если она уже на фоне -->
+                    </div>
+                </div>
+                {% endfor %}
+                <!-- Arrows -->
+                <button class="carousel-arrow left-2 top-1/2 -translate-y-1/2 absolute z-20 bg-white/70 hover:bg-white text-blue-600 rounded-full w-10 h-10 flex items-center justify-center shadow transition" id="carousel-prev" aria-label="Предыдущий слайд">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                </button>
+                <button class="carousel-arrow right-2 top-1/2 -translate-y-1/2 absolute z-20 bg-white/70 hover:bg-white text-blue-600 rounded-full w-10 h-10 flex items-center justify-center shadow transition" id="carousel-next" aria-label="Следующий слайд">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+            <!-- Carousel Navigation -->
+            <div class="flex justify-center space-x-2 mt-6">
+                <button class="carousel-dot w-3 h-3 rounded-full bg-blue-500 transition-all duration-300" data-slide="0" aria-label="Слайд 1"></button>
+                <button class="carousel-dot w-3 h-3 rounded-full bg-gray-500 hover:bg-gray-400 transition-all duration-300" data-slide="1" aria-label="Слайд 2"></button>
+                <button class="carousel-dot w-3 h-3 rounded-full bg-gray-500 hover:bg-gray-400 transition-all duration-300" data-slide="2" aria-label="Слайд 3"></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Products -->
+  
+    <!-- Gaming PC Section -->
+    <section class="py-12 bg-white dark:bg-[#1a2230]">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col lg:flex-row items-center gap-8">
+                <div class="flex-1">
+                    <div class="grid grid-cols-3 gap-4">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='120' viewBox='0 0 150 120'%3E%3Crect width='130' height='100' x='10' y='10' rx='8' fill='%2306b6d4' opacity='0.3'/%3E%3Crect width='110' height='70' x='20' y='25' rx='4' fill='%23ffffff' opacity='0.1'/%3E%3C/svg%3E" alt="PC Case 1" class="w-full rounded-lg">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='120' viewBox='0 0 150 120'%3E%3Crect width='130' height='100' x='10' y='10' rx='8' fill='%23ef4444' opacity='0.4'/%3E%3Crect width='110' height='70' x='20' y='25' rx='4' fill='%23000000' opacity='0.6'/%3E%3C/svg%3E" alt="PC Case 2" class="w-full rounded-lg">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='120' viewBox='0 0 150 120'%3E%3Crect width='130' height='100' x='10' y='10' rx='8' fill='%23374151' opacity='0.8'/%3E%3Crect width='110' height='70' x='20' y='25' rx='4' fill='%23111827'/%3E%3C/svg%3E" alt="PC Case 3" class="w-full rounded-lg">
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-4xl font-bold text-black dark:text-white mb-4">Готовый игровой ПК</h2>
+                    <p class="text-lg text-[#b0b0b0] dark:text-[#7a8599] mb-6">Лучшие игровые решения от бюджетных до профессиональных персональных компьютеров</p>
+                    <button class="bg-[#7a85ff] hover:bg-[#4b1bb3] text-white px-8 py-3 rounded-lg font-semibold transition-colors"><a href="{% url 'store:catalog' %}">КУПИТЬ СЕЙЧАС</a></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PC Configurator -->
+    <section class="py-12 bg-[#e5e7eb] dark:bg-[#23283a]">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col lg:flex-row items-center gap-8">
+                <div class="flex-1">
+                    <h2 class="text-4xl font-bold text-black dark:text-white mb-4">Удобный конфигуратор ПК</h2>
+                    <p class="text-lg text-[#b0b0b0] dark:text-[#7a8599] mb-6">Выберите свой идеальный компьютер, который подойдёт именно вам</p>
+                    <button class="bg-white text-[#7a85ff] hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold transition-colors"><a href="{% url 'pcbuilder:pcbuilder' %}">СОБРАТЬ ПК</a></button>
+                </div>
+                <div class="flex-1">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='350' height='200' x='25' y='50' rx='15' fill='%23dc2626' opacity='0.8'/%3E%3Crect width='60' height='40' x='50' y='80' rx='8' fill='%23ffffff' opacity='0.9'/%3E%3Ctext x='80' y='105' text-anchor='middle' fill='%23000000' font-size='8' font-family='Arial'%3EMSI%3C/text%3E%3Crect width='200' height='80' x='130' y='120' rx='8' fill='%23000000' opacity='0.7'/%3E%3Crect width='80' height='30' x='290' y='90' rx='5' fill='%2310b981' opacity='0.8'/%3E%3C/svg%3E" alt="PC Components" class="w-full rounded-lg">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="py-12 bg-white dark:bg-[#1a2230]">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="text-center">
+                    <h3 class="text-2xl font-bold text-black dark:text-white mb-4">КОМПЛЕКТУЮЩИЕ</h3>
+                    <p class="text-[#b0b0b0] dark:text-[#7a8599] mb-6">Процессоры всех самых современных марок-производителей, видеокарты, материнские платы и многое другое</p>
+                    <button class="bg-[#7a85ff] hover:bg-[#4b1bb3] text-white px-6 py-3 rounded-lg font-semibold transition-colors"><a href="{% url 'store:catalog' %}">КУПИТЬ СЕЙЧАС</a></button>
+                    <div class="mt-6">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'%3E%3Crect width='80' height='60' x='20' y='70' rx='8' fill='%2306b6d4' opacity='0.6'/%3E%3Crect width='80' height='60' x='110' y='70' rx='8' fill='%23ef4444' opacity='0.6'/%3E%3Crect width='80' height='60' x='200' y='70' rx='8' fill='%2310b981' opacity='0.6'/%3E%3C/svg%3E" alt="Components" class="w-full rounded-lg">
+                    </div>
+                </div>
+                <div class="text-center">
+                    <h3 class="text-2xl font-bold text-black dark:text-white mb-4">КОМПЬЮТЕРНАЯ ПЕРИФЕРИЯ</h3>
+                    <p class="text-[#b0b0b0] dark:text-[#7a8599] mb-6">Вооружитесь с самым лучшим в мире оружием геймера и аксессуарами: мониторы, клавиатуры и многое другое</p>
+                    <button class="bg-[#7a85ff] hover:bg-[#4b1bb3] text-white px-6 py-3 rounded-lg font-semibold transition-colors"><a href="{% url 'store:catalog' %}">КУПИТЬ СЕЙЧАС</a></button>
+                    <div class="mt-6">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'%3E%3Crect width='120' height='80' x='20' y='60' rx='12' fill='%23374151' opacity='0.8'/%3E%3Crect width='100' height='60' x='30' y='70' rx='8' fill='%23000000'/%3E%3Crect width='80' height='20' x='160' y='120' rx='10' fill='%23065f46' opacity='0.8'/%3E%3Ccircle cx='260' cy='130' r='25' fill='%23475569' opacity='0.7'/%3E%3C/svg%3E" alt="Peripherals" class="w-full rounded-lg">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Advantages -->
+    <section class="py-12 bg-[#e5e7eb] dark:bg-[#23283a]">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-black dark:text-white text-center mb-12">Наши преимущества</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for adv in advantages %}
+                <div class="text-center">
+                    <div class="w-16 h-16 flex items-center justify-center mx-auto mb-4 bg-white dark:bg-[#1a2230] border rounded-full shadow-lg" style="border-color: {{ adv.color }};">
+                        {% if adv.icon == 'star' %}
+                        <svg class="w-8 h-8" fill="none" stroke="{{ adv.color }}" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l2.036 6.29a1 1 0 00.95.69h6.6c.969 0 1.371 1.24.588 1.81l-5.347 3.89a1 1 0 00-.364 1.118l2.036 6.29c.3.921-.755 1.688-1.54 1.118l-5.347-3.89a1 1 0 00-1.176 0l-5.347 3.89c-.784.57-1.838-.197-1.54-1.118l2.036-6.29a1 1 0 00-.364-1.118l-5.347-3.89c-.783-.57-.38-1.81.588-1.81h6.6a1 1 0 00.95-.69l2.036-6.29z"/></svg>
+                        {% elif adv.icon == 'shield' %}
+                        <svg class="w-8 h-8" fill="none" stroke="{{ adv.color }}" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-4 8-10V5.236a1 1 0 00-.553-.894l-7-3.5a1 1 0 00-.894 0l-7 3.5A1 1 0 004 5.236V12c0 6 8 10 8 10z"/></svg>
+                        {% elif adv.icon == 'support' %}
+                        <svg class="w-8 h-8" fill="none" stroke="{{ adv.color }}" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 15a4 4 0 008 0M9 9h.01M15 9h.01"/></svg>
+                        {% elif adv.icon == 'rocket' %}
+                        <svg class="w-8 h-8" fill="none" stroke="{{ adv.color }}" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7M5 13l-1.5 4.5a.5.5 0 00.6.6L11 19M5 13l6-6 4 4-6 6z"/></svg>
+                        {% elif adv.icon == 'gift' %}
+                        <svg class="w-8 h-8" fill="none" stroke="{{ adv.color }}" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="10" rx="2" stroke-width="2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 7V3m0 4a3 3 0 11-6 0 3 3 0 016 0zm0 0a3 3 0 016 0 3 3 0 01-6 0z"/></svg>
+                        {% elif adv.icon == 'heart' %}
+                        <svg class="w-8 h-8" fill="none" stroke="{{ adv.color }}" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                        {% endif %}
+                    </div>
+                    <h3 class="text-xl font-bold text-black dark:text-white mb-2">{{ adv.title }}</h3>
+                    <p class="text-[#4b5563] dark:text-[#b0b0b0]">{{ adv.description }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="py-12 bg-gradient-to-r from-blue-600 to-purple-600">
+        <div class="container mx-auto px-4 flex flex-col items-center justify-center">
+            <div class="max-w-2xl w-full mx-auto bg-white/90 dark:bg-[#23283a]/90 rounded-2xl shadow-xl p-10 flex flex-col items-center">
+                <div class="bg-[#7a85ff] text-white px-4 py-2 rounded-full text-sm font-semibold mb-4">Только сейчас</div>
+                <h2 class="text-4xl font-bold text-center text-[#23283a] dark:text-white mb-4">Скидка 10% на первый заказ</h2>
+                <p class="text-lg text-center text-[#4b5563] dark:text-[#b0b0b0] mb-8 opacity-90">Подпишитесь на рассылку и получите промокод на скидку</p>
+                <form class="flex flex-col sm:flex-row gap-4 w-full max-w-md mx-auto" id="newsletter-form">
+                    <input type="email" placeholder="Ваш email" class="flex-1 px-4 py-3 rounded-lg text-[#23283a] dark:text-white bg-gray-100 dark:bg-[#1a2230] focus:outline-none focus:ring-2 focus:ring-[#7a85ff]" required>
+                    <button type="submit" class="bg-[#7a85ff] hover:bg-[#4b1bb3] text-white px-6 py-3 rounded-lg font-semibold transition-colors">ПОЛУЧИТЬ СКИДКУ</button>
+                </form>
+                <div id="newsletter-success" class="hidden mt-4 text-green-600 font-semibold text-center">Спасибо за подписку! Промокод отправлен на ваш email.</div>
+                <div id="newsletter-error" class="hidden mt-4 text-red-600 font-semibold text-center">Пожалуйста, введите корректный email адрес.</div>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        .carousel-slide { opacity: 0; pointer-events: none; z-index: 0; }
+        .carousel-slide.active { opacity: 1; pointer-events: auto; z-index: 10; }
+    </style>
+    <script>
+        // Carousel functionality
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+        const dots = document.querySelectorAll('.carousel-dot');
+        const prevBtn = document.getElementById('carousel-prev');
+        const nextBtn = document.getElementById('carousel-next');
+        let carouselInterval;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+                slide.setAttribute('aria-hidden', i !== index);
+                slide.setAttribute('tabindex', i === index ? '0' : '-1');
+            });
+            dots.forEach((dot, i) => {
+                if (i === index) {
+                    dot.classList.remove('bg-gray-500', 'hover:bg-gray-400');
+                    dot.classList.add('bg-blue-500');
+                } else {
+                    dot.classList.remove('bg-blue-500');
+                    dot.classList.add('bg-gray-500', 'hover:bg-gray-400');
+                }
+            });
+            currentSlide = index;
+        }
+
+        function nextSlide() {
+            showSlide((currentSlide + 1) % slides.length);
+        }
+        function prevSlide() {
+            showSlide((currentSlide - 1 + slides.length) % slides.length);
+        }
+        function startCarousel() {
+            carouselInterval = setInterval(nextSlide, 5000);
+        }
+        function stopCarousel() {
+            clearInterval(carouselInterval);
+        }
+        // Init
+        showSlide(currentSlide);
+        startCarousel();
+        // Dot navigation
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                showSlide(index);
+                stopCarousel();
+                startCarousel();
+            });
+        });
+        // Arrow navigation
+        prevBtn.addEventListener('click', () => {
+            prevSlide();
+            stopCarousel();
+            startCarousel();
+        });
+        nextBtn.addEventListener('click', () => {
+            nextSlide();
+            stopCarousel();
+            startCarousel();
+        });
+        
+        // Product card hover effects
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = '0 10px 30px rgba(59, 130, 246, 0.3)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'none';
+            });
+        });
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Add loading animation to buttons
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', function() {
+                if (this.textContent.includes('КУПИТЬ') || this.textContent.includes('ПОЛУЧИТЬ')) {
+                    const originalText = this.textContent;
+                    this.textContent = 'Загрузка...';
+                    this.disabled = true;
+                    
+                    setTimeout(() => {
+                        this.textContent = originalText;
+                        this.disabled = false;
+                    }, 2000);
+                }
+            });
+        });
+        
+        // Newsletter form handling (улучшено)
+        const newsletterForm = document.getElementById('newsletter-form');
+        if (newsletterForm) {
+            newsletterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const input = this.querySelector('input[type="email"]');
+                const email = input.value.trim();
+                const successMsg = document.getElementById('newsletter-success');
+                const errorMsg = document.getElementById('newsletter-error');
+                if (email && email.includes('@') && email.includes('.') && email.length > 5) {
+                    successMsg.classList.remove('hidden');
+                    errorMsg.classList.add('hidden');
+                    input.value = '';
+                } else {
+                    errorMsg.classList.remove('hidden');
+                    successMsg.classList.add('hidden');
+                }
+            });
+        }
+        
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all sections for scroll animations
+        document.querySelectorAll('section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(30px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(section);
+        });
+        
+        // Initialize first section as visible
+        document.querySelector('section').style.opacity = '1';
+        document.querySelector('section').style.transform = 'translateY(0)';
+    </script>
+{% endblock %}

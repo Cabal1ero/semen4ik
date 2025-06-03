@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="min-h-screen py-10">
+    <h1 class="text-3xl font-bold dark:text-white text-center mb-10">Каталог товаров</h1>
+    <div class="max-w-7xl mx-auto">
+      {% for product_line in product_lines %}
+        <h2 class="text-xl font-bold dark:text-white mb-4 mt-10">{{ product_line.name }}</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mb-8">
+          {% for category in product_line.categories.all %}
+            <a href="{% url 'store:category_detail' product_line.slug category.slug %}" class="block">
+              <div class="dark:bg-[#e5e7eb] flex flex-col items-center justify-between rounded-lg overflow-hidden">
+                <div class="flex items-center justify-center w-full h-[180px] bg-[#e5e7eb] text-[#b0b0b0] text-3xl font-bold">
+                  400 × 300
+                </div>
+                <div class="bg-white dark:bg-[#1a2230] dark:text-white text-center py-3 w-full font-medium">
+                  {{ category.name }}
+                </div>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

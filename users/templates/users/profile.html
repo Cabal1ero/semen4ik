@@ -1,0 +1,290 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row gap-6">
+            <!-- Левая панель с фото и навигацией -->
+            <div class="w-full md:w-64 flex-shrink-0">
+                <div class="bg-white dark:bg-[#28303F] shadow-md rounded-lg p-6">
+                    <div class="flex flex-col items-center mb-6">
+                        <div class="w-48 h-48 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        <h2 class="text-xl font-bold text-center">{{ user.username }}</h2>
+                        <p class="text-gray-600 dark:text-gray-400 text-center">{{ user.email }}</p>
+                    </div>
+
+                    <nav class="space-y-2">
+                        <button onclick="showSection('personal-info')" class="block w-full px-4 py-2 text-left rounded-md hover:bg-gray-100 dark:hover:bg-[#1E242E] text-gray-700 dark:text-gray-300">
+                            Личная информация
+                        </button>
+                        <button onclick="showSection('order-history')" class="block w-full px-4 py-2 text-left rounded-md hover:bg-gray-100 dark:hover:bg-[#1E242E] text-gray-700 dark:text-gray-300">
+                            История заказов
+                        </button>
+                        <button onclick="showSection('promocodes')" class="block w-full px-4 py-2 text-left rounded-md hover:bg-gray-100 dark:hover:bg-[#1E242E] text-gray-700 dark:text-gray-300">
+                            Промокоды
+                        </button>
+                        <button onclick="showSection('configurations')" class="block w-full px-4 py-2 text-left rounded-md hover:bg-gray-100 dark:hover:bg-[#1E242E] text-gray-700 dark:text-gray-300">
+                            Мои конфигурации
+                        </button>
+                    </nav>
+
+                    <div class="mt-6">
+                        <a href="{% url 'users:logout' %}" class="block w-full px-4 py-2 text-center bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                            Выйти
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Правая панель с контентом -->
+            <div class="flex-1">
+                <div class="bg-white dark:bg-[#28303F] shadow-md rounded-lg p-6">
+                    <!-- Личная информация -->
+                    <div id="personal-info" class="section-content">
+                        <h3 class="text-xl font-semibold mb-4">Личная информация</h3>
+                        <form method="POST" class="space-y-6">
+                            {% csrf_token %}
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Имя</label>
+                                    <input type="text" name="first_name" value="{{ user.first_name }}" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-[#1E242E] dark:text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Фамилия</label>
+                                    <input type="text" name="last_name" value="{{ user.last_name }}" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-[#1E242E] dark:text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+                                    <input type="email" name="email" value="{{ user.email }}" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-[#1E242E] dark:text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Телефон</label>
+                                    <input type="tel" name="phone" value="{{ user.phone }}" placeholder="+7 (___) ___-__-__" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-[#1E242E] dark:text-white">
+                                </div>
+                            </div>
+
+                            <div class="mt-6">
+                                <h4 class="text-lg font-medium mb-4">Информация о доставке</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Область/Регион</label>
+                                        <input type="text" name="delivery_region" value="{{ user.delivery_region }}" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-[#1E242E] dark:text-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Город</label>
+                                        <input type="text" name="delivery_city" value="{{ user.delivery_city }}" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-[#1E242E] dark:text-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Улица</label>
+                                        <input type="text" name="delivery_street" value="{{ user.delivery_street }}" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-[#1E242E] dark:text-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Дом</label>
+                                        <input type="text" name="delivery_house" value="{{ user.delivery_house }}" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-[#1E242E] dark:text-white">
+                                    </div>      
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Квартира</label>
+                                        <input type="text" name="delivery_apartment" value="{{ user.delivery_apartment }}" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-[#1E242E] dark:text-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Почтовый индекс</label>
+                                        <input type="text" name="delivery_postal_code" value="{{ user.delivery_postal_code }}" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-[#1E242E] dark:text-white">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 flex justify-end">
+                                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    Сохранить изменения
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- История заказов -->
+                    <div id="order-history" class="section-content hidden">
+                        <h3 class="text-xl font-semibold mb-4">История заказов</h3>
+                        <div class="bg-gray-50 dark:bg-[#1E242E] rounded-lg p-6">
+                            <div class="text-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                </svg>
+                                <p class="text-gray-600 dark:text-gray-400">У вас пока нет заказов</p>
+                                <a href="#" class="mt-4 inline-block text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300">
+                                    Перейти в каталог
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Промокоды -->
+                    <div id="promocodes" class="section-content hidden">
+                        <h3 class="text-xl font-semibold mb-4">Промокоды</h3>
+                        <div class="bg-gray-50 dark:bg-[#1E242E] rounded-lg p-6">
+                            <div class="text-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                                </svg>
+                                <p class="text-gray-600 dark:text-gray-400">У вас пока нет промокодов</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Мои конфигурации -->
+                    <div id="configurations" class="section-content hidden">
+                        <h3 class="text-xl font-semibold mb-4">Мои конфигурации</h3>
+                        <div id="configurations-list" class="space-y-4">
+                            <!-- Здесь будут отображаться конфигурации -->
+                            <div class="text-center py-8">
+                                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-center">
+                            <a href="{% url 'pcbuilder:pcbuilder' %}" class="inline-block text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300">
+                                Создать новую конфигурацию
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showSection(sectionId) {
+    // Скрываем все секции
+    document.querySelectorAll('.section-content').forEach(section => {
+        section.classList.add('hidden');
+    });
+    
+    // Показываем выбранную секцию
+    const section = document.getElementById(sectionId);
+    section.classList.remove('hidden');
+    
+    // Если открыта секция конфигураций, загружаем их
+    if (sectionId === 'configurations') {
+        loadUserConfigurations();
+    }
+}
+
+async function loadUserConfigurations() {
+    const container = document.getElementById('configurations-list');
+    try {
+        const response = await fetch("{% url 'pcbuilder:api_builds' %}");
+        const data = await response.json();
+        
+        if (data.success) {
+            if (data.configurations.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-gray-50 dark:bg-[#1E242E] rounded-lg p-6">
+                        <div class="text-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            <p class="text-gray-600 dark:text-gray-400">У вас пока нет сохраненных конфигураций</p>
+                        </div>
+                    </div>`;
+                return;
+            }
+            
+            container.innerHTML = data.configurations.map(config => `
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-900 dark:text-white">${config.name}</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Создано: ${config.created_at}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-lg font-bold text-blue-600 dark:text-blue-400">${config.total_price} ₽</p>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            ${config.components.map(component => `
+                                <div class="flex justify-between items-center text-sm">
+                                    <div class="flex-1">
+                                        <p class="text-gray-900 dark:text-white">${component.product_name}</p>
+                                        <p class="text-gray-500 dark:text-gray-400">${component.category_name}</p>
+                                    </div>
+                                    <p class="text-gray-600 dark:text-gray-300 ml-4">${component.price} ₽</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="mt-4 flex justify-end space-x-2">
+                            <a href="{% url 'pcbuilder:pcbuilder' %}?load_config=${config.id}" 
+                               class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                Загрузить
+                            </a>
+                            <button onclick="deleteConfiguration(${config.id})" 
+                                    class="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                                Удалить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            throw new Error(data.error || 'Ошибка при загрузке конфигураций');
+        }
+    } catch (error) {
+        console.error('Ошибка при загрузке конфигураций:', error);
+        container.innerHTML = `
+            <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-4 text-red-600 dark:text-red-400">
+                Ошибка при загрузке конфигураций. Пожалуйста, попробуйте позже.
+            </div>`;
+    }
+}
+
+async function deleteConfiguration(configId) {
+    if (!confirm('Вы уверены, что хотите удалить эту конфигурацию?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/pcbuilder/api/delete-configuration/${configId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            loadUserConfigurations(); // Перезагружаем список конфигураций
+        } else {
+            throw new Error(data.error || 'Ошибка при удалении конфигурации');
+        }
+    } catch (error) {
+        console.error('Ошибка при удалении конфигурации:', error);
+        alert('Произошла ошибка при удалении конфигурации. Пожалуйста, попробуйте позже.');
+    }
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Показываем личную информацию по умолчанию
+document.addEventListener('DOMContentLoaded', function() {
+    showSection('personal-info');
+});
+</script>
+{% endblock %}
+
