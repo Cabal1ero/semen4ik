@@ -4,39 +4,42 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
-from .forms import  UserUpdateForm as CustomUserCreationForm, UserRegisterForm as CustomAuthenticationForm
+from .forms import  UserUpdateForm , UserRegisterForm
 from store.models import PromoCode, PromoCodeUsage, UserPromoCode
 from pcbuilder.models import SavedPCBuild
 from order.models import Order
-
+from django.contrib.auth.forms import AuthenticationForm
 def register_view(request):
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
+        form = UserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
             messages.success(request, 'Регистрация прошла успешно!')
-            return redirect('index')
+            return redirect('core:index')
     else:
-        form = CustomUserCreationForm()
+        form = UserRegisterForm()
     return render(request, 'users/register.html', {'form': form})
 
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('core:index')
+    
     if request.method == 'POST':
-        form = CustomAuthenticationForm(request, data=request.POST)
+        form = AuthenticationForm(request=request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            messages.success(request, 'Вы успешно вошли в систему!')
-            return redirect('index')
+            next_url = request.GET.get('next', 'core:index')
+            return redirect(next_url)
     else:
-        form = CustomAuthenticationForm()
+        form = AuthenticationForm(request=request)
+    
     return render(request, 'users/login.html', {'form': form})
-
 def logout_view(request):
     logout(request)
     messages.success(request, 'Вы вышли из системы.')
-    return redirect('index')
+    return redirect('core:index')
 
 @login_required
 def profile_view(request):
