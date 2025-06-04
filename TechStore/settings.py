@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'cart',
     'favorites',
     'pcbuilder',
+    'order',
     'core',
 ]
 TAILWIND_APP_NAME = 'theme'
