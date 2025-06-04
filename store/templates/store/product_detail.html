@@ -1,6 +1,42 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<!-- Хлебные крошки -->
+<div class="max-w-[1440px] mx-auto px-4 pt-10 pt-6 pb-2">
+  <nav class="flex items-center flex-wrap text-xs text-gray-500 dark:text-gray-400">
+    <a href="{% url 'core:index' %}" class="hover:text-[#7a85ff] transition-colors flex items-center">
+      <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+      </svg>
+      Главная
+    </a>
+    
+    <svg class="w-3 h-3 mx-2 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+    </svg>
+    
+    <a href="{% url 'store:catalog' %}" class="hover:text-[#7a85ff] transition-colors">
+      Каталог
+    </a>
+    
+    <svg class="w-3 h-3 mx-2 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+    </svg>
+    
+    <a href="{% url 'store:category_detail' product_line.slug category.slug %}" class="hover:text-[#7a85ff] transition-colors">
+      {{ category.name }}
+    </a>
+    
+    <svg class="w-3 h-3 mx-2 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+    </svg>
+    
+    <span class="text-gray-700 dark:text-gray-300 font-medium">
+      {{ product.name|truncatechars:60 }}
+    </span>
+  </nav>
+</div>
+
 <div class="min-h-screen max-w-[1440px] mx-auto py-10 px-4 flex flex-col lg:flex-row gap-10">
   <!-- Галерея -->
   <div class="w-full lg:w-[56%] flex flex-col">
@@ -34,9 +70,11 @@
       </div>
       <div class="flex items-center gap-4 mb-2">
         <span class="flex items-center gap-2 text-black dark:text-white text-base">
+           {% if product.stock %}  
           <span class="inline-block w-3 h-3 rounded-full bg-green-500"></span>
-          В наличии {{ product.stock|default:'12' }} шт.
+          В наличии: {{ product.stock }} шт. 
         </span>
+        {% endif %}
         <button type="button" class="cart-btn bg-[#7a85ff] hover:bg-[#4b1bb3] text-white py-2 rounded-[8px] text-base font-semibold transition-colors w-[200px] max-w-full sm:w-[200px]" data-product-slug="{{ product.slug }}">
           {% if product.id in cart_product_ids %}Убрать из корзины{% else %}В корзину{% endif %}
         </button>

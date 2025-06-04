@@ -51,13 +51,19 @@ def computer_catalog(request):
         graphics_card = components.filter(category__slug='videokarta').first()
         ram = components.filter(category__slug='ram').first()
         storage = components.filter(category__slug='storage').first()
+        motherboard = components.filter(category__slug='motherboard').first()
+        power_supply = components.filter(category__slug='psu').first()
+        case = components.filter(category__slug='case').first()
         
         computer_data = {
             'computer': computer,
-            'processor': processor.product.name if processor else 'Не указан',
-            'graphics_card': graphics_card.product.name if graphics_card else 'Не указана',
-            'ram': f"{ram.product.name} x{ram.quantity}" if ram else 'Не указана',
-            'storage': storage.product.name if storage else 'Не указан',
+            'processor': processor.product.name if processor else '',
+            'graphics_card': graphics_card.product.name if graphics_card else '',
+            'ram': f"{ram.product.name} x{ram.quantity}" if ram else '',
+            'storage': storage.product.name if storage else '',
+            'motherboard': motherboard.product.name if motherboard else '',
+            'power_supply': power_supply.product.name if power_supply else '',
+            'case': case.product.name if case else '',
             'components': components,
         }
         computers_with_details.append(computer_data)
@@ -90,15 +96,21 @@ def get_computers_by_category(request, category_name):
             graphics_card = components.filter(category__slug='videokarta').first()
             ram = components.filter(category__slug='ram').first()
             storage = components.filter(category__slug='storage').first()
+            motherboard = components.filter(category__slug='motherboard').first()
+            power_supply = components.filter(category__slug='psu').first()
+            case = components.filter(category__slug='case').first()
             
             computer_data = {
-                'computer': computer,
-                'processor': processor.product.name if processor else 'Не указан',
-                'graphics_card': graphics_card.product.name if graphics_card else 'Не указана',
-                'ram': f"{ram.product.name} x{ram.quantity}" if ram else 'Не указана',
-                'storage': storage.product.name if storage else 'Не указан',
-                'components': components,
-            }
+                        'computer': computer,
+                        'processor': processor.product.name if processor else '',
+                        'graphics_card': graphics_card.product.name if graphics_card else '',
+                        'ram': f"{ram.product.name} x{ram.quantity}" if ram else '',
+                        'storage': storage.product.name if storage else '',
+                        'motherboard': motherboard.product.name if motherboard else '',
+                        'power_supply': power_supply.product.name if power_supply else '',
+                        'case': case.product.name if case else '',
+                        'components': components,
+                    }
             computers_with_details.append(computer_data)
         
         # Рендерим только секцию с компьютерами

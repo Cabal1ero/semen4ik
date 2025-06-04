@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404
-from .models import ProductLine, Category, Product
+from .models import ProductLine, Category, Product, Specification, ProductSpec
+from collections import defaultdict
+from decimal import Decimal
 # Create your views here.
 def index(request):
     return render(request, 'store/index.html')
@@ -11,16 +13,82 @@ def catalog(request):
 def category_detail(request, product_line_slug, category_slug):
     product_line = get_object_or_404(ProductLine, slug=product_line_slug)
     category = get_object_or_404(Category, slug=category_slug, product_line=product_line)
+    
+    # Получаем все продукты категории
     products = category.products.all()
+    
+    # Получаем параметры фильтрации
+    price_from = request.GET.get('price_from')
+    price_to = request.GET.get('price_to')
+    
+    # Фильтрация по цене
+    if price_from:
+        try:
+            price_from_decimal = Decimal(price_from)
+            # Фильтруем товары, у которых финальная цена >= price_from
+            filtered_products = []
+            for product in products:
+                if product.final_price >= price_from_decimal:
+                    filtered_products.append(product.id)
+            products = products.filter(id__in=filtered_products)
+        except (ValueError, TypeError):
+            pass
+
+    if price_to:
+        try:
+            price_to_decimal = Decimal(price_to)
+            # Фильтруем товары, у которых финальная цена <= price_to
+            filtered_products = []
+            for product in products:
+                if product.final_price <= price_to_decimal:
+                    filtered_products.append(product.id)
+            products = products.filter(id__in=filtered_products)
+        except (ValueError, TypeError):
+            pass
+    
+    # Получаем все доступные спецификации для продуктов в категории
+    specifications = Specification.objects.filter(
+        category=category
+    ).distinct()
+    
+    # Собираем доступные значения для каждой спецификации
+    filter_options = {}
+    selected_specs = defaultdict(list)
+    
+    for spec in specifications:
+        # Получаем все уникальные значения для данной спецификации
+        values = ProductSpec.objects.filter(
+            specification=spec,
+            product__category=category
+        ).values_list('value', flat=True).distinct()
+        
+        filter_options[spec] = sorted(values)
+        
+        # Проверяем выбранные значения из GET параметров
+        selected_values = request.GET.getlist(f'spec_{spec.id}')
+        if selected_values:
+            selected_specs[spec.id] = selected_values
+            # Фильтруем продукты по выбранным спецификациям
+            products = products.filter(
+                specs__specification=spec,
+                specs__value__in=selected_values
+            )
+    
+    # Получаем ID продуктов в корзине и избранном
     cart_product_ids = []
     wishlist_product_ids = []
     if request.user.is_authenticated:
         cart_product_ids = list(request.user.cart_items.values_list('product_id', flat=True))
         wishlist_product_ids = list(request.user.favorite_items.values_list('product_id', flat=True))
+    
     return render(request, 'store/category_detail.html', {
         'product_line': product_line,
         'category': category,
         'products': products,
+        'filter_options': filter_options,
+        'selected_specs': dict(selected_specs),
+        'price_from': price_from,
+        'price_to': price_to,
         'cart_product_ids': cart_product_ids,
         'wishlist_product_ids': wishlist_product_ids,
     })
@@ -46,4 +114,3 @@ def product_detail(request, product_line_slug, category_slug, product_slug):
         'cart_product_ids': cart_product_ids,
         'wishlist_product_ids': wishlist_product_ids,
     })
-

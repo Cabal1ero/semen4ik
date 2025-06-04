@@ -22,11 +22,71 @@ def api_categories(request):
 
 @require_GET
 @login_required
-def api_products(request):
+def api_category_filters(request):
+    """Получение доступных фильтров для категории"""
     category_id = request.GET.get('category')
-    products = Product.objects.filter(category_id=category_id) if category_id else Product.objects.none()
+    if not category_id:
+        return JsonResponse({'filters': []})
+    
+    try:
+        category = get_object_or_404(Category, id=category_id)
+        
+        # Получаем спецификации для данной категории
+        specifications = category.specifications.all()
+        
+        filters = []
+        for spec in specifications:
+            # Получаем уникальные значения для каждой спецификации
+            values = ProductSpec.objects.filter(
+                specification=spec,
+                product__category=category
+            ).values_list('value', flat=True).distinct()
+            
+            if values:  # Только если есть значения
+                filters.append({
+                    'id': spec.id,
+                    'name': spec.name,
+                    'unit': spec.unit,
+                    'values': sorted(list(values))
+                })
+        
+        return JsonResponse({'filters': filters})
+        
+    except Category.DoesNotExist:
+        return JsonResponse({'filters': []})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
+
+@require_GET
+@login_required
+def api_products(request):
+    """Получение товаров с фильтрацией"""
+    category_id = request.GET.get('category')
+    filter1_spec = request.GET.get('filter1_spec')  # ID спецификации
+    filter1_value = request.GET.get('filter1_value')  # Значение
+    filter2_spec = request.GET.get('filter2_spec')
+    filter2_value = request.GET.get('filter2_value')
+    
+    if not category_id:
+        return JsonResponse({'products': []})
+    
+    products = Product.objects.filter(category_id=category_id)
+    
+    # Применяем фильтры
+    if filter1_spec and filter1_value:
+        products = products.filter(
+            specs__specification_id=filter1_spec,
+            specs__value=filter1_value
+        )
+    
+    if filter2_spec and filter2_value:
+        products = products.filter(
+            specs__specification_id=filter2_spec,
+            specs__value=filter2_value
+        )
+    
     result = []
-    for product in products:
+    for product in products.distinct():
         specs = list(product.specs.select_related('specification').values(
             'specification__name', 'value', 'specification__unit'))
         result.append({
@@ -36,6 +96,7 @@ def api_products(request):
             'image': product.image.url if product.image else '',
             'specs': specs,
         })
+    
     return JsonResponse({'products': result})
 
 @login_required
@@ -258,3 +319,42 @@ def get_products_by_category(request):
         return JsonResponse({'products': list(products)})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400)
+
+@require_POST
+def api_load_prebuilt(request):
+    """Загрузка готовой конфигурации в конфигуратор пользователя"""
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'Необходимо войти в систему', 'redirect': '/accounts/login/'})
+    
+    try:
+        data = json.loads(request.body)
+        prebuilt_id = data.get('prebuilt_id')
+        
+        if not prebuilt_id:
+            return JsonResponse({'success': False, 'error': 'Не указан ID конфигурации'})
+        
+        # Получаем готовую конфигурацию
+        prebuilt = get_object_or_404(PrebuiltPC, id=prebuilt_id)
+        
+        # Получаем или создаем сборку пользователя
+        build, created = PCBuild.objects.get_or_create(user=request.user)
+        
+        # Очищаем текущую сборку
+        PCBuildComponent.objects.filter(build=build).delete()
+        
+        # Загружаем компоненты из готовой конфигурации
+        with transaction.atomic():
+            for component in prebuilt.components.all():
+                PCBuildComponent.objects.create(
+                    build=build,
+                    product=component.product,
+                    category=component.category,
+                    quantity=component.quantity
+                )
+        
+        return JsonResponse({'success': True, 'message': 'Конфигурация успешно загружена'})
+        
+    except PrebuiltPC.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Конфигурация не найдена'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': f'Ошибка загрузки: {str(e)}'})

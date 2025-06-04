@@ -2,14 +2,14 @@
 
 // --- SVG-иконки для sidebar ---
 const CATEGORY_ICONS = {
-  'Видеокарта': `<svg class="w-6 h-6 mr-2 text-[#7a85ff] dark:text-[#7a85ff]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="10" rx="2"/><circle cx="7.5" cy="12" r="1.5"/><circle cx="16.5" cy="12" r="1.5"/></svg>`,
-  'Процессор': `<svg class="w-6 h-6 mr-2 text-[#7a85ff] dark:text-[#7a85ff]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg>`,
-  'Материнская плата': `<svg class="w-6 h-6 mr-2 text-[#7a85ff] dark:text-[#7a85ff]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h10v10H7z"/></svg>`,
-  'Накопитель': `<svg class="w-6 h-6 mr-2 text-[#7a85ff] dark:text-[#7a85ff]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="10" rx="2"/><path d="M8 11h8v2H8z"/></svg>`,
-  'Корпус': `<svg class="w-6 h-6 mr-2 text-[#7a85ff] dark:text-[#7a85ff]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M9 7h6"/></svg>`,
+  'Видеокарты': `<svg class="w-6 h-6 mr-2 text-[#7a85ff] dark:text-[#7a85ff]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="10" rx="2"/><circle cx="7.5" cy="12" r="1.5"/><circle cx="16.5" cy="12" r="1.5"/></svg>`,
+  'Процессоры': `<svg class="w-6 h-6 mr-2 text-[#7a85ff] dark:text-[#7a85ff]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg>`,
+  'Материнские платы': `<svg class="w-6 h-6 mr-2 text-[#7a85ff] dark:text-[#7a85ff]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h10v10H7z"/></svg>`,
+  'Накопители': `<svg class="w-6 h-6 mr-2 text-[#7a85ff] dark:text-[#7a85ff]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="10" rx="2"/><path d="M8 11h8v2H8z"/></svg>`,
+  'Корпуса': `<svg class="w-6 h-6 mr-2 text-[#7a85ff] dark:text-[#7a85ff]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M9 7h6"/></svg>`,
   'Оперативная память': `<svg class="w-6 h-6 mr-2 text-[#7a85ff] dark:text-[#7a85ff]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="10" rx="2"/><path d="M7 10h2v4H7zM15 10h2v4h-2z"/></svg>`,
-  'Система охлаждения': `<svg class="w-6 h-6 mr-2 text-[#7a85ff] dark:text-[#7a85ff]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2m10-10h-2M4 12H2m15.07-7.07l-1.41 1.41M6.34 17.66l-1.41 1.41m12.02 0l-1.41-1.41M6.34 6.34L4.93 4.93"/></svg>`,
-  'Блок питания': `<svg class="w-6 h-6 mr-2 text-[#7a85ff] dark:text-[#7a85ff]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="10" rx="2"/><path d="M7 12h2v2H7zM15 12h2v2h-2z"/></svg>`,
+  'Системы охлаждения': `<svg class="w-6 h-6 mr-2 text-[#7a85ff] dark:text-[#7a85ff]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2m10-10h-2M4 12H2m15.07-7.07l-1.41 1.41M6.34 17.66l-1.41 1.41m12.02 0l-1.41-1.41M6.34 6.34L4.93 4.93"/></svg>`,
+  'Блоки питания': `<svg class="w-6 h-6 mr-2 text-[#7a85ff] dark:text-[#7a85ff]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="10" rx="2"/><path d="M7 12h2v2H7zM15 12h2v2h-2z"/></svg>`,
 };
 
 function showToast(message, type = 'success') {
@@ -41,16 +41,23 @@ let selectedCategoryId = null;
 let lastSavedBuildId = null;
 let allCategories = [];
 let allProducts = [];
-let currentFilters = {};
+let currentFilters = [];
+let currentCategoryId = null;
 
 // Загрузка категорий с иконками
 async function loadCategories() {
   const res = await fetch('/pcbuilder/api/categories/');
   const data = await res.json();
   allCategories = data.categories;
+  
+  // Отладочная информация - посмотрите в консоли браузера
+ 
+  
   const list = document.getElementById('category-list');
   list.innerHTML = '';
   data.categories.forEach(cat => {
+   
+    
     const li = document.createElement('li');
     li.innerHTML = `<button class="w-full flex items-center px-4 py-3 rounded-xl transition-colors font-medium text-lg ${selectedCategoryId === cat.id ? 'bg-[#7a85ff] text-white' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-[#23283a]'}" data-id="${cat.id}">
       ${(CATEGORY_ICONS[cat.name] || '<span class=\'w-6 h-6 mr-2\'>🖥️</span>')}
@@ -59,49 +66,211 @@ async function loadCategories() {
     li.querySelector('button').onclick = () => {
       selectedCategoryId = cat.id;
       loadCategories();
-      loadProducts(cat.id);
+      loadCategoryFilters(cat.id);
     };
     list.appendChild(li);
   });
 }
 
-// Загрузка товаров категории
-async function loadProducts(categoryId) {
-  const res = await fetch(`/pcbuilder/api/products/?category=${categoryId}`);
-  const data = await res.json();
-  allProducts = data.products;
-  renderFilters(data.products);
-  renderProducts(data.products);
+// Функция загрузки фильтров для категории
+function loadCategoryFilters(categoryId) {
+  currentCategoryId = categoryId;
+  
+  // Находим название выбранной категории
+  const selectedCategory = allCategories.find(cat => cat.id === categoryId);
+  
+  fetch(`/pcbuilder/api/category-filters/?category=${categoryId}`)
+    .then(response => response.json())
+    .then(data => {
+      currentFilters = data.filters || [];
+      updateFilterSelects();
+      loadProducts();
+      
+      // Показываем информацию о количестве доступных фильтров
+      if (currentFilters.length > 0) {
+        console.log(`Загружено ${currentFilters.length} фильтров для категории "${selectedCategory?.name}":`, 
+                   currentFilters.map(f => f.name));
+      } else {
+        console.log(`Для категории "${selectedCategory?.name}" фильтры не найдены`);
+      }
+    })
+    .catch(error => {
+      console.error('Ошибка загрузки фильтров:', error);
+      showToast('Ошибка загрузки фильтров', 'error');
+    });
 }
 
-// Рендер фильтров по спецификациям
-function renderFilters(products) {
-  // Пример: ищем уникальные значения для фильтров
+// Обновление селектов фильтров
+function updateFilterSelects() {
   const filter1 = document.getElementById('filter-1');
   const filter2 = document.getElementById('filter-2');
-  filter1.innerHTML = '<option value="">Производитель</option>';
-  filter2.innerHTML = '<option value="">Объем памяти</option>';
-  const brands = new Set();
-  const memory = new Set();
-  products.forEach(prod => {
-    prod.specs.forEach(s => {
-      if (s.specification__name.toLowerCase().includes('производитель')) brands.add(s.value);
-      if (s.specification__name.toLowerCase().includes('объем')) memory.add(s.value);
-    });
+  const filtersContainer = document.getElementById('filters-container');
+  
+  // Показываем контейнер фильтров только если есть фильтры
+  if (currentFilters.length > 0) {
+    filtersContainer.style.display = 'flex';
+  } else {
+    filtersContainer.style.display = 'none';
+    return;
+  }
+  
+  // Очищаем фильтры
+  filter1.innerHTML = '<option value="">Выберите спецификацию</option>';
+  filter2.innerHTML = '<option value="">Выберите спецификацию</option>';
+  
+  // Сбрасываем dataset
+  delete filter1.dataset.spec;
+  delete filter2.dataset.spec;
+  
+  // Сбрасываем подписи
+  document.getElementById('filter-1-label').textContent = 'Фильтр 1';
+  document.getElementById('filter-2-label').textContent = 'Фильтр 2';
+  
+  // Заполняем оба фильтра доступными спецификациями
+  currentFilters.forEach(filter => {
+    const option1 = document.createElement('option');
+    option1.value = filter.id;
+    option1.textContent = filter.name + (filter.unit ? ` (${filter.unit})` : '');
+    filter1.appendChild(option1);
+    
+    const option2 = document.createElement('option');
+    option2.value = filter.id;
+    option2.textContent = filter.name + (filter.unit ? ` (${filter.unit})` : '');
+    filter2.appendChild(option2);
   });
-  brands.forEach(b => filter1.innerHTML += `<option value="${b}">${b}</option>`);
-  memory.forEach(m => filter2.innerHTML += `<option value="${m}">${m}</option>`);
-  filter1.onchange = () => applyFilters();
-  filter2.onchange = () => applyFilters();
 }
 
-function applyFilters() {
-  const brand = document.getElementById('filter-1').value;
-  const memory = document.getElementById('filter-2').value;
-  let filtered = allProducts;
-  if (brand) filtered = filtered.filter(prod => prod.specs.some(s => s.value === brand));
-  if (memory) filtered = filtered.filter(prod => prod.specs.some(s => s.value === memory));
-  renderProducts(filtered);
+// Функция сброса конкретного фильтра
+function resetFilter(filterId) {
+  const filter = document.getElementById(filterId);
+  const labelId = filterId + '-label';
+  const labelText = filterId === 'filter-1' ? 'Фильтр 1' : 'Фильтр 2';
+  
+  // Создаем новый селект
+  const newSelect = document.createElement('select');
+  newSelect.id = filterId;
+  newSelect.className = filter.className;
+  
+  // Заполняем спецификациями
+  newSelect.innerHTML = '<option value="">Выберите спецификацию</option>';
+  currentFilters.forEach(filterItem => {
+    const option = document.createElement('option');
+    option.value = filterItem.id;
+    option.textContent = filterItem.name + (filterItem.unit ? ` (${filterItem.unit})` : '');
+    newSelect.appendChild(option);
+  });
+  
+  // Сбрасываем подпись
+  document.getElementById(labelId).textContent = labelText;
+  
+  // Заменяем элемент
+  filter.parentNode.replaceChild(newSelect, filter);
+}
+
+// Обновление значений для выбранной спецификации
+function updateFilterValues(filterElement, specId, labelElement) {
+  const selectedFilter = currentFilters.find(f => f.id == specId);
+  if (!selectedFilter) return;
+  
+  // Обновляем подпись фильтра
+  labelElement.textContent = selectedFilter.name + (selectedFilter.unit ? ` (${selectedFilter.unit})` : '');
+  
+  // Очищаем и добавляем пустой вариант
+  filterElement.innerHTML = '<option value="">Все значения</option>';
+  
+  // Добавляем значения
+  selectedFilter.values.forEach(value => {
+    const option = document.createElement('option');
+    option.value = value;
+    option.textContent = value;
+    filterElement.appendChild(option);
+  });
+}
+
+// Более простой подход с делегированием событий
+function setupFilterHandlers() {
+  const filtersContainer = document.getElementById('filters-container');
+  
+  // Удаляем старые обработчики
+  filtersContainer.removeEventListener('change', handleFilterChange);
+  filtersContainer.removeEventListener('click', handleClearFilters);
+  
+  // Добавляем новые обработчики с делегированием
+  filtersContainer.addEventListener('change', handleFilterChange);
+  filtersContainer.addEventListener('click', handleClearFilters);
+}
+
+function handleFilterChange(event) {
+  const target = event.target;
+  
+  if (target.id === 'filter-1' || target.id === 'filter-2') {
+    const filterId = target.id;
+    const labelId = filterId + '-label';
+    
+    if (target.value && !target.dataset.spec) {
+      // Выбрана спецификация - превращаем в селект значений
+      const newSelect = document.createElement('select');
+      newSelect.id = filterId;
+      newSelect.className = target.className;
+      newSelect.dataset.spec = target.value;
+      
+      const label = document.getElementById(labelId);
+      updateFilterValues(newSelect, target.value, label);
+      
+      target.parentNode.replaceChild(newSelect, target);
+    } else if (target.dataset.spec && target.value) {
+      // Выбрано значение - фильтруем товары
+      loadProducts();
+    } else if (target.dataset.spec && !target.value) {
+      // Выбрано "Все значения" - сбрасываем этот фильтр
+      resetFilter(filterId);
+      loadProducts();
+    } else if (!target.value && !target.dataset.spec) {
+      // Сброс фильтра на уровне выбора спецификации
+      loadProducts();
+    }
+  }
+}
+
+function handleClearFilters(event) {
+  if (event.target.id === 'clear-filters') {
+    clearFilters();
+  }
+}
+
+// Упрощенная функция очистки всех фильтров
+function clearFilters() {
+  resetFilter('filter-1');
+  resetFilter('filter-2');
+  loadProducts();
+}
+
+// Обновленная функция загрузки товаров с фильтрами
+function loadProducts() {
+  if (!currentCategoryId) return;
+  
+  const filter1Select = document.getElementById('filter-1');
+  const filter2Select = document.getElementById('filter-2');
+  
+  let url = `/pcbuilder/api/products/?category=${currentCategoryId}`;
+  
+  // Добавляем фильтры если они выбраны
+  if (filter1Select.dataset.spec && filter1Select.value) {
+    url += `&filter1_spec=${filter1Select.dataset.spec}&filter1_value=${filter1Select.value}`;
+  }
+  
+  if (filter2Select.dataset.spec && filter2Select.value) {
+    url += `&filter2_spec=${filter2Select.dataset.spec}&filter2_value=${filter2Select.value}`;
+  }
+  
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      renderProducts(data.products || []);
+    })
+    .catch(error => {
+      console.error('Ошибка загрузки товаров:', error);
+    });
 }
 
 // Рендер карточек товаров
@@ -149,7 +318,7 @@ async function loadBuild() {
     div.innerHTML = `
       <div>
         <div class="text-gray-400 text-sm font-semibold mb-1">${comp.category_name}</div>
-        <div class="text-base font-bold text-white">${comp.product_name}</div>
+        <div class="text-base font-bold text-black dark:text-white ">${comp.product_name}</div>
       </div>
       <div class="flex flex-col items-end">
         <span class="font-bold text-[#7a85ff] text-lg">${comp.price} ₽</span>
@@ -176,7 +345,7 @@ async function addToBuild(productId) {
   if (data.success) {
     showToast('Компонент добавлен');
     loadBuild();
-    loadProducts(selectedCategoryId);
+    loadProducts();
   } else {
     showToast(data.error || 'Ошибка', 'error');
   }
@@ -196,7 +365,7 @@ async function removeFromBuild(productId) {
   if (data.success) {
     showToast('Компонент удалён');
     loadBuild();
-    loadProducts(selectedCategoryId);
+    loadProducts();
   } else {
     showToast(data.error || 'Ошибка', 'error');
   }
@@ -304,10 +473,11 @@ async function loadSavedConfigAndApply(configId) {
 }
 
 // При загрузке страницы — если есть load_config, подгружаем конфиг
-const origDomContentLoaded = window.onload;
 window.addEventListener('DOMContentLoaded', async () => {
   loadCategories();
   loadBuild();
+  setupFilterHandlers();
+  
   document.getElementById('save-build-btn').onclick = saveBuild;
   document.getElementById('add-to-cart-btn').onclick = addBuildToCart;
 
@@ -315,5 +485,4 @@ window.addEventListener('DOMContentLoaded', async () => {
   if (configId) {
     await loadSavedConfigAndApply(configId);
   }
-  if (typeof origDomContentLoaded === 'function') origDomContentLoaded();
-}); 
+});

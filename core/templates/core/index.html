@@ -59,7 +59,7 @@
                 <div class="flex-1">
                     <h2 class="text-4xl font-bold text-black dark:text-white mb-4">Готовый игровой ПК</h2>
                     <p class="text-lg text-[#b0b0b0] dark:text-[#7a8599] mb-6">Лучшие игровые решения от бюджетных до профессиональных персональных компьютеров</p>
-                    <button class="bg-[#7a85ff] hover:bg-[#4b1bb3] text-white px-8 py-3 rounded-lg font-semibold transition-colors"><a href="{% url 'store:catalog' %}">КУПИТЬ СЕЙЧАС</a></button>
+                    <button class="bg-[#7a85ff] hover:bg-[#4b1bb3] text-white px-8 py-3 rounded-lg font-semibold transition-colors"><a href="{% url 'core:computer_catalog' %}">КУПИТЬ СЕЙЧАС</a></button>
                 </div>
             </div>
         </div>
@@ -245,20 +245,7 @@
         });
         
         // Add loading animation to buttons
-        document.querySelectorAll('button').forEach(button => {
-            button.addEventListener('click', function() {
-                if (this.textContent.includes('КУПИТЬ') || this.textContent.includes('ПОЛУЧИТЬ')) {
-                    const originalText = this.textContent;
-                    this.textContent = 'Загрузка...';
-                    this.disabled = true;
-                    
-                    setTimeout(() => {
-                        this.textContent = originalText;
-                        this.disabled = false;
-                    }, 2000);
-                }
-            });
-        });
+     
         
         // Newsletter form handling (улучшено)
         const newsletterForm = document.getElementById('newsletter-form');

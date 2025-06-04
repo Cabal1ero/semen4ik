@@ -96,9 +96,65 @@
             });
         });
 
-        function addToCart(computerId) {
-            // Здесь будет логика добавления в корзину
-            alert('Функция добавления в корзину будет реализована позже');
+        // Функция для загрузки готовой конфигурации в конфигуратор
+        function loadPrebuiltConfig(prebuiltId) {
+            // Проверяем, авторизован ли пользователь
+            {% if not user.is_authenticated %}
+                alert('Для загрузки конфигурации необходимо войти в систему');
+                window.location.href = '/accounts/login/';
+                return;
+            {% endif %}
+
+            // Показываем загрузку
+            loading.classList.remove('hidden');
+            
+            // Отправляем запрос на загрузку конфигурации
+            fetch('/pcbuilder/api/load-prebuilt/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    prebuilt_id: prebuiltId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Конфигурация загружена! Переходим в конфигуратор...');
+                    window.location.href = '/pcbuilder/';
+                } else {
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                    } else {
+                        alert('Ошибка: ' + data.error);
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при загрузке конфигурации');
+            })
+            .finally(() => {
+                loading.classList.add('hidden');
+            });
+        }
+
+        // Функция для получения CSRF токена
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
         }
     </script>
 
