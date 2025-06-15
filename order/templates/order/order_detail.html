@@ -25,7 +25,7 @@
             <!-- Основная информация -->
             <div class="lg:col-span-2 space-y-8">
                 <!-- Товары -->
-                <div class="bg-white dark:bg-[#23283a] rounded-2xl p-8 shadow-lg">
+                <div class="bg-white dark:bg-[#28303F] rounded-2xl p-8 shadow-lg">
                     <h2 class="text-xl font-bold text-black dark:text-white mb-6">Товары в заказе</h2>
                     <div class="space-y-4">
                         {% for item in order_items %}
@@ -50,7 +50,7 @@
                 </div>
 
                 <!-- Адрес доставки -->
-                <div class="bg-white dark:bg-[#23283a] rounded-2xl p-8 shadow-lg">
+                <div class="bg-white dark:bg-[#28303F] rounded-2xl p-8 shadow-lg">
                     <h2 class="text-xl font-bold text-black dark:text-white mb-6">Адрес доставки</h2>
                     <div class="text-black dark:text-white">
                         <div class="mb-2"><strong>{{ order.first_name }} {{ order.last_name }}</strong></div>
@@ -62,7 +62,7 @@
 
                 <!-- История статусов -->
                 {% if status_history %}
-                <div class="bg-white dark:bg-[#23283a] rounded-2xl p-8 shadow-lg">
+                <div class="bg-white dark:bg-[#28303F] rounded-2xl p-8 shadow-lg">
                     <h2 class="text-xl font-bold text-black dark:text-white mb-6">История заказа</h2>
                     <div class="space-y-4">
                         {% for history in status_history %}
@@ -84,7 +84,7 @@
 
             <!-- Сводка заказа -->
             <div class="lg:col-span-1">
-                <div class="bg-white dark:bg-[#23283a] rounded-2xl p-8 shadow-lg sticky top-8">
+                <div class="bg-white dark:bg-[#28303F] rounded-2xl p-8 shadow-lg sticky top-8">
                     <h2 class="text-xl font-bold text-black dark:text-white mb-6">Сводка заказа</h2>
                     
                     <div class="space-y-3 mb-6">
