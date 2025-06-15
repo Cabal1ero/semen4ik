@@ -5,13 +5,13 @@
   <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
     <div class="flex-1">
       <h1 class="text-3xl font-bold text-black dark:text-white mb-8">Корзина</h1>
-      <div class="bg-white dark:bg-[#23283a] rounded-2xl p-8 shadow-lg">
+      <div class="bg-white dark:bg-[#28303F] rounded-2xl p-8 shadow-lg">
         {% for item in cart_items %}
         <div class="cart-item flex items-center gap-8 py-6 border-b border-[#e5e7eb] dark:border-[#363b4a] last:border-b-0 rounded-2xl" 
              data-product-id="{{ item.product.id }}" 
              data-stock="{{ item.product.stock|default:99 }}">
           <a href="/catalog/{{ item.product.category.product_line.slug }}/{{ item.product.category.slug }}/{{ item.product.slug }}/" class="block">
-            <div class="w-[180px] h-[150px] bg-[#e5e7eb] dark:bg-[#23283a] flex items-center justify-center rounded-xl text-3xl text-[#b0b0b0] dark:text-[#7a8599] font-bold shrink-0">
+            <div class="w-[180px] h-[150px] bg-[#e5e7eb] dark:bg-[#28303F] flex items-center justify-center rounded-xl text-3xl text-[#b0b0b0] dark:text-[#7a8599] font-bold shrink-0">
               {% if item.product.image %}
                 <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="w-full h-full object-cover rounded-xl">
               {% else %}
@@ -46,7 +46,7 @@
       </div>
     </div>
     <div class="w-full lg:w-[400px] flex-shrink-0">
-      <div class="bg-white dark:bg-[#23283a] rounded-2xl p-8 shadow-lg flex flex-col gap-6">
+      <div class="bg-white dark:bg-[#28303F] rounded-2xl p-8 shadow-lg flex flex-col gap-6">
         <div>
           <div class="text-black dark:text-white text-xl font-bold mb-4">Итого</div>
           

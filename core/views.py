@@ -1,21 +1,65 @@
-from django.shortcuts import render
-from .models import HeroSlide, Advantage
+from django.shortcuts import render, redirect
+from .models import HeroSlide, Advantage, SupportTicket
 from pcbuilder.models import CategoryPC, PrebuiltPC
 from django.http import JsonResponse
+from store.models import Product, Category, ProductLine
+from django.db.models import Count
+from django.contrib import messages
 
 # Create your views here.
 def index(request):
-    slides = HeroSlide.objects.filter(active=True)
-    advantages = Advantage.objects.filter(active=True)
-    return render(request, 'core/index.html', {
+    slides = HeroSlide.objects.filter(is_active=True).order_by('order')
+    advantages = Advantage.objects.all().order_by('order')
+    
+    # Получаем 4 случайных товара
+    random_products = Product.objects.order_by('?')[:4]
+    
+    # Получаем популярные категории (например, по количеству товаров)
+    popular_categories = Category.objects.annotate(
+        num_products=Count('products')
+    ).order_by('-num_products')[:4]
+    
+    # Получаем разделы для каталога
+    product_lines = ProductLine.objects.all()
+
+    context = {
         'slides': slides,
         'advantages': advantages,
-    })
+        'random_products': random_products,
+        'popular_categories': popular_categories,
+        'product_lines': product_lines,
+    }
+    return render(request, 'core/index.html', context)
 
 def about(request):
     return render(request, 'core/about.html')
 
-def support(request):
+def support_view(request):
+    if request.method == 'POST':
+        try:
+            name = request.POST.get('name')
+            email = request.POST.get('email')
+            topic = request.POST.get('topic')
+            message_text = request.POST.get('message')
+
+            if not all([name, email, topic, message_text]):
+                messages.error(request, 'Пожалуйста, заполните все поля.')
+                return redirect('core:support')
+
+            ticket = SupportTicket.objects.create(
+                user=request.user if request.user.is_authenticated else None,
+                name=name,
+                email=email,
+                topic=topic,
+                message=message_text
+            )
+            messages.success(request, 'Ваше сообщение успешно отправлено! Мы свяжемся с вами в ближайшее время.')
+            return redirect('core:support')
+        
+        except Exception as e:
+            messages.error(request, f'Произошла ошибка: {e}')
+            return redirect('core:support')
+
     return render(request, 'core/support.html')
 
 def payments(request):

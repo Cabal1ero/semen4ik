@@ -6,6 +6,15 @@
 <div class="min-h-screen  text-gray-900 dark:text-white">
     <div class="max-w-5xl mx-auto py-10">
         <h1 class="text-3xl font-bold mb-6">Поддержка</h1>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="p-4 mb-4 text-sm rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200{% else %}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200{% endif %}" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
         <div class="bg-gray-100 dark:bg-gray-800 rounded-xl p-6 mb-6 flex flex-col gap-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="bg-gray-200 dark:bg-gray-700 rounded-lg p-6 flex flex-col items-center">

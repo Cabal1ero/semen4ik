@@ -14,8 +14,8 @@ def category_detail(request, product_line_slug, category_slug):
     product_line = get_object_or_404(ProductLine, slug=product_line_slug)
     category = get_object_or_404(Category, slug=category_slug, product_line=product_line)
     
-    # Получаем все продукты категории
-    products = category.products.all()
+    # Получаем все продукты категории с предзагрузкой изображений
+    products = category.products.prefetch_related('images')
     
     # Получаем параметры фильтрации
     price_from = request.GET.get('price_from')

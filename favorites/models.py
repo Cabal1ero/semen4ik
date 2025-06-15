@@ -5,9 +5,9 @@ from store.models import Product
 # Create your models here.
 
 class FavoriteItem(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='favorite_items')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    added_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='favorite_items', verbose_name='Пользователь')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товар')
+    added_at = models.DateTimeField('Дата добавления', auto_now_add=True)
 
     class Meta:
         unique_together = ('user', 'product')

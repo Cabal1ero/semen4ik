@@ -100,6 +100,24 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+
+    // Эффект смены изображения при наведении
+    document.querySelectorAll('.product-card-image').forEach(img => {
+        const mainImage = img.dataset.mainImage;
+        const secondaryImage = img.dataset.secondaryImage;
+
+        if (secondaryImage && mainImage !== secondaryImage) {
+            const parentLink = img.closest('a');
+            if (parentLink) {
+                parentLink.addEventListener('mouseenter', () => {
+                    img.src = secondaryImage;
+                });
+                parentLink.addEventListener('mouseleave', () => {
+                    img.src = mainImage;
+                });
+            }
+        }
+    });
 });
 
 function getCookie(name) {

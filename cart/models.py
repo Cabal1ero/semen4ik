@@ -3,10 +3,10 @@ from django.conf import settings
 from store.models import Product, PromoCode
 
 class CartItem(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='cart_items')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
-    added_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='cart_items', verbose_name='Пользователь')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товар')
+    quantity = models.PositiveIntegerField('Количество', default=1)
+    added_at = models.DateTimeField('Дата добавления', auto_now_add=True)
 
     class Meta:
         unique_together = ('user', 'product')
@@ -27,10 +27,11 @@ class CartPromoCode(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, 
         on_delete=models.CASCADE, 
-        related_name='cart_promocode'
+        related_name='cart_promocode',
+        verbose_name='Пользователь'
     )
-    promocode = models.ForeignKey(PromoCode, on_delete=models.CASCADE)
-    applied_at = models.DateTimeField(auto_now_add=True)
+    promocode = models.ForeignKey(PromoCode, on_delete=models.CASCADE, verbose_name='Промокод')
+    applied_at = models.DateTimeField('Дата применения', auto_now_add=True)
 
     class Meta:
         verbose_name = 'Промокод в корзине'

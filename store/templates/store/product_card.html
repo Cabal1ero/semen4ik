@@ -17,7 +17,13 @@
     <!-- Картинка -->
     <div class="bg-[#e5e7eb] dark:bg-[#23283a] flex items-center justify-center w-full h-[220px] text-[#b0b0b0] dark:text-[#7a8599] text-3xl font-bold rounded-t-2xl">
       {% if product.image %}
-        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover rounded-t-2xl">
+        {% with secondary_img=product.secondary_image %}
+        <img src="{{ product.image.url }}" 
+             alt="{{ product.name }}" 
+             class="w-full h-full object-cover rounded-t-2xl product-card-image"
+             data-main-image="{{ product.image.url }}"
+             {% if secondary_img %}data-secondary-image="{{ secondary_img.image.url }}"{% endif %}>
+        {% endwith %}
       {% else %}
         300 × 300
       {% endif %}

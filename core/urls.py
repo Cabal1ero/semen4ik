@@ -1,12 +1,12 @@
 from django.urls import path
-from .views import index, about, support, payments, delivery, computer_catalog, get_computers_by_category
+from .views import index, about, support_view, payments, delivery, computer_catalog, get_computers_by_category
 
 app_name = 'core'
 
 urlpatterns = [
     path('', index, name='index'),
     path('about/', about, name='about'),
-    path('support/', support, name='support'),
+    path('support/', support_view, name='support'),
     path('payments/', payments, name='payments'),
     path('delivery/', delivery, name='delivery'),
     path('pc/', computer_catalog, name='computer_catalog'),

@@ -10,9 +10,21 @@ from django.utils import timezone
 
 @admin.register(ProductLine)
 class ProductLineAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug', 'categories_count')
+    list_display = ('name', 'slug', 'image_preview', 'categories_count')
     prepopulated_fields = {"slug": ("name",)}
     search_fields = ('name',)
+    readonly_fields = ('image_preview',)
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'slug', 'image', 'image_preview')
+        }),
+    )
+
+    def image_preview(self, obj):
+        if obj.image:
+            return format_html('<img src="{}" style="max-height: 50px; max-width: 80px;" />', obj.image.url)
+        return "—"
+    image_preview.short_description = 'Превью'
 
     def categories_count(self, obj):
         return obj.categories.count()
@@ -21,10 +33,22 @@ class ProductLineAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'product_line', 'slug', 'products_count', 'specifications_count')
+    list_display = ('name', 'product_line', 'slug', 'image_preview', 'products_count', 'specifications_count')
     list_filter = ('product_line',)
     prepopulated_fields = {"slug": ("name",)}
     search_fields = ('name', 'product_line__name')
+    readonly_fields = ('image_preview',)
+    fieldsets = (
+        (None, {
+            'fields': ('product_line', 'name', 'slug', 'image', 'image_preview')
+        }),
+    )
+
+    def image_preview(self, obj):
+        if obj.image:
+            return format_html('<img src="{}" style="max-height: 50px; max-width: 80px;" />', obj.image.url)
+        return "—"
+    image_preview.short_description = 'Превью'
 
     def products_count(self, obj):
         return obj.products.count()
@@ -94,7 +118,7 @@ class ProductAdmin(admin.ModelAdmin):
             'fields': ('name', 'slug', 'category', 'description')
         }),
         ('Цена и скидки', {
-            'fields': ('price', 'discount', 'final_price_display')
+            'fields': ('price', 'discount')
         }),
         ('Склад', {
             'fields': ('stock', 'min_stock'),
@@ -117,7 +141,9 @@ class ProductAdmin(admin.ModelAdmin):
     image_preview.short_description = 'Главное фото'
 
     def final_price_display(self, obj):
-        return f"{obj.final_price:.2f} ₽"
+        if obj.pk and obj.final_price is not None:
+            return f"{obj.final_price:.2f} ₽"
+        return "—"
     final_price_display.short_description = 'Цена со скидкой'
 
     def stock_status(self, obj):
@@ -177,6 +203,7 @@ class PromoCodeAdmin(admin.ModelAdmin):
     search_fields = ('code', 'name', 'description')
     readonly_fields = ('used_count', 'created_at', 'updated_at')
     filter_horizontal = ('allowed_users', 'allowed_categories')
+    inlines = [PromoCodeUsageInline]
     
     fieldsets = (
         ('Основная информация', {

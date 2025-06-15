@@ -11,7 +11,11 @@
             <a href="{% url 'store:category_detail' product_line.slug category.slug %}" class="block">
               <div class="dark:bg-[#e5e7eb] flex flex-col items-center justify-between rounded-lg overflow-hidden">
                 <div class="flex items-center justify-center w-full h-[180px] bg-[#e5e7eb] text-[#b0b0b0] text-3xl font-bold">
-                  400 × 300
+                  {% if category.image %}
+                    <img src="{{ category.image.url }}" alt="{{ category.name }}" class="w-full h-full object-cover">
+                  {% else %}
+                    <span class="text-2xl text-center p-4">{{ category.name }}</span>
+                  {% endif %}
                 </div>
                 <div class="bg-white dark:bg-[#1a2230] dark:text-white text-center py-3 w-full font-medium">
                   {{ category.name }}

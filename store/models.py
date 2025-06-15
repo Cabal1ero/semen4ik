@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from django.utils.text import slugify
 from decimal import Decimal
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 
@@ -9,6 +10,7 @@ class ProductLine(models.Model):
     """Разделы товаров (Комплектующие, Периферия)"""
     name = models.CharField('Название', max_length=100, unique=True)
     slug = models.SlugField('URL', max_length=100, unique=True)
+    image = models.ImageField('Изображение', upload_to='product_lines/', blank=True, null=True)
 
     class Meta:
         verbose_name = 'Раздел'
@@ -31,6 +33,7 @@ class Category(models.Model):
     )
     name = models.CharField('Название', max_length=100)
     slug = models.SlugField('URL', max_length=100, unique=True)
+    image = models.ImageField('Изображение', upload_to='categories/', blank=True, null=True)
 
     PROTECTED_SLUGS = [
         'videokarta', 'processor', 'motherboard', 'storage',
@@ -48,15 +51,22 @@ class Category(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
+        
         if self.pk:
             orig = Category.objects.get(pk=self.pk)
+            # Запрещаем менять name и slug для системных категорий
             if orig.slug in self.PROTECTED_SLUGS:
-                raise Exception("Изменение этой категории запрещено!")
+                if orig.name != self.name or orig.slug != self.slug:
+                    raise ValidationError(
+                        "Изменение имени или URL для системных категорий, "
+                        "используемых в конфигураторе ПК, запрещено!"
+                    )
+        
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         if self.slug in self.PROTECTED_SLUGS:
-            raise Exception("Удаление этой категории запрещено!")
+            raise ValidationError("Удаление системных категорий, используемых в конфигураторе ПК, запрещено!")
         super().delete(*args, **kwargs)
 
 class Specification(models.Model):
@@ -128,6 +138,11 @@ class Product(models.Model):
         super().save(*args, **kwargs)
 
     @property
+    def secondary_image(self):
+        """Возвращает первое изображение из галереи для превью на карточке."""
+        return self.images.order_by('order').first()
+
+    @property
     def final_price(self):
         if self.discount:
             discount_decimal = Decimal(str(self.discount)) / Decimal('100')
@@ -151,6 +166,7 @@ class Product(models.Model):
     def can_order(self, quantity=1):
         """Проверка возможности заказа определенного количества"""
         return self.stock >= quantity
+
 class ProductImage(models.Model):
     """Галерея изображений для товара"""
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
@@ -180,6 +196,7 @@ class ProductSpec(models.Model):
 
     def __str__(self):
         return f"{self.product.name}: {self.specification.name} = {self.value}"
+
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 import string

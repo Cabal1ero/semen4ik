@@ -9,6 +9,8 @@ from .forms import UserUpdateForm, UserRegisterForm
 from store.models import PromoCode, PromoCodeUsage, UserPromoCode
 from pcbuilder.models import SavedPCBuild
 from order.models import Order
+from django.db import models
+from django.utils import timezone
 
 
 User = get_user_model()
@@ -72,92 +74,103 @@ def profile_view(request):
 @require_GET
 @login_required
 def get_user_promocodes(request):
-    """API для получения промокодов пользователя"""
+    """API для получения промокодов пользователя с улучшенной логикой"""
     try:
-        # Получаем персональные промокоды
-        personal_promocodes = UserPromoCode.objects.filter(
-            user=request.user
-        ).select_related('promocode')
+        user = request.user
+        now = timezone.now()
         
-        # Получаем использованные промокоды
-        used_promocodes = PromoCodeUsage.objects.filter(
-            user=request.user
-        ).select_related('promocode').order_by('-used_at')
+        # Получаем все персональные промокоды пользователя через связующую модель
+        personal_promo_ids = UserPromoCode.objects.filter(user=user).values_list('promocode_id', flat=True)
         
-        # Получаем доступные промокоды (общие)
-        available_promocodes = PromoCode.objects.filter(
-            status='active'
-        ).exclude(
-            # Исключаем уже использованные
-            id__in=used_promocodes.values_list('promocode_id', flat=True)
-        )
+        # Получаем все общие (не персональные) активные промокоды
+        public_promos = PromoCode.objects.filter(allowed_users__isnull=True)
         
-        # Формируем ответ
+        # Получаем объекты персональных промокодов
+        personal_promos = PromoCode.objects.filter(id__in=personal_promo_ids)
+
+        # Объединяем все релевантные промокоды в один запрос, чтобы избежать дублирования
+        all_relevant_promos = (public_promos | personal_promos).distinct().prefetch_related('allowed_categories')
+        
+        # Получаем информацию об использовании промокодов этим пользователем
+        user_usages = PromoCodeUsage.objects.filter(user=user).values('promocode_id').annotate(count=models.Count('id'))
+        user_usage_map = {usage['promocode_id']: usage['count'] for usage in user_usages}
+
         promocodes_data = {
             'personal': [],
             'available': [],
             'used': []
         }
-        
-        # Персональные промокоды
-        for user_promo in personal_promocodes:
-            promo = user_promo.promocode
-            is_valid, error_msg = promo.is_valid(user=request.user)
+
+        for promo in all_relevant_promos:
+            user_usage_count = user_usage_map.get(promo.id, 0)
+            is_personal = promo.id in personal_promo_ids
             
-            promocodes_data['personal'].append({
+            # Определяем статус и категорию
+            is_used_by_user = user_usage_count >= promo.usage_limit_per_user
+            is_expired = promo.end_date and promo.end_date < now
+            is_not_started = promo.start_date and promo.start_date > now
+            is_globally_used_up = promo.usage_limit is not None and promo.used_count >= promo.usage_limit
+            is_inactive_by_status = promo.status != 'active'
+
+            display_status = 'active'
+            target_list = 'available'
+            
+            if is_used_by_user:
+                display_status = 'used'
+                target_list = 'used'
+            elif is_expired:
+                display_status = 'expired'
+                target_list = 'used'
+            elif is_globally_used_up:
+                display_status = 'used_up'
+                target_list = 'used'
+            elif is_inactive_by_status:
+                display_status = promo.status
+                target_list = 'used'
+            elif is_not_started:
+                display_status = 'not_started'
+            
+            # Собираем данные промокода
+            promo_info = {
                 'id': promo.id,
                 'code': promo.code,
                 'name': promo.name,
                 'description': promo.description,
                 'discount_type': promo.discount_type,
                 'discount_value': float(promo.discount_value),
-                'min_order_amount': float(promo.min_order_amount),
-                'end_date': promo.end_date.strftime('%d.%m.%Y'),
-                'is_valid': is_valid,
-                'error_message': error_msg if not is_valid else None,
-                'assigned_at': user_promo.assigned_at.strftime('%d.%m.%Y %H:%M')
-            })
-        
-        # Доступные промокоды
-        for promo in available_promocodes[:5]:  # Показываем только первые 5
-            is_valid, error_msg = promo.is_valid(user=request.user)
+                'min_order_amount': float(promo.min_order_amount) if promo.min_order_amount else 0,
+                'max_discount_amount': float(promo.max_discount_amount) if promo.max_discount_amount else None,
+                'start_date': promo.start_date.isoformat() if promo.start_date else None,
+                'end_date': promo.end_date.isoformat() if promo.end_date else None,
+                'usage_limit': promo.usage_limit,
+                'used_count': promo.used_count,
+                'usage_limit_per_user': promo.usage_limit_per_user,
+                'user_usage_count': user_usage_count,
+                'allowed_categories': [cat.name for cat in promo.allowed_categories.all()],
+                'display_status': display_status,
+            }
             
-            promocodes_data['available'].append({
-                'id': promo.id,
-                'code': promo.code,
-                'name': promo.name,
-                'description': promo.description,
-                'discount_type': promo.discount_type,
-                'discount_value': float(promo.discount_value),
-                'min_order_amount': float(promo.min_order_amount),
-                'end_date': promo.end_date.strftime('%d.%m.%Y'),
-                'is_valid': is_valid,
-                'error_message': error_msg if not is_valid else None
-            })
-        
-        # Использованные промокоды
-        for usage in used_promocodes[:10]:  # Показываем последние 10
-            promocodes_data['used'].append({
-                'id': usage.promocode.id,
-                'code': usage.promocode.code,
-                'name': usage.promocode.name,
-                'discount_amount': float(usage.discount_amount),
-                'order_amount': float(usage.order_amount),
-                'used_at': usage.used_at.strftime('%d.%m.%Y %H:%M'),
-                'order_id': usage.order_id
-            })
-        
+            # Распределяем по категориям
+            if target_list == 'used':
+                promocodes_data['used'].append(promo_info)
+            elif is_personal:
+                promocodes_data['personal'].append(promo_info)
+            else:
+                promocodes_data['available'].append(promo_info)
+
         return JsonResponse({
             'success': True,
             'promocodes': promocodes_data
         })
         
     except Exception as e:
+        # Логирование ошибки может быть полезно
+        # import logging
+        # logging.error(f"Error in get_user_promocodes: {e}", exc_info=True)
         return JsonResponse({
             'success': False,
             'error': str(e),
-            'promocodes': []
-        })
+        }, status=500)
 
 @require_GET
 @login_required
